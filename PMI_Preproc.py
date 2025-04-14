@@ -15,8 +15,8 @@ from numpy import *
 from array import array
 import os
 
-from ReferencePipelineToDPU import Functions_pipeline
-from ReferencePipelineToDPU import Functions_DPU_related
+import Functions_DPU_related
+import Functions_pipeline
 
 def makeDummyData(linkInput, nameInput, linkDark, nameDark, linkFlat, nameFlat, linkDemod, nameDemod):
     #################################################################
@@ -66,7 +66,7 @@ I2U_scale = 0
 I2V_scale = 0
 
 #If you need to create the dummy data, set this to 1. Needed only 1x.
-dummyData = 0
+dummyData = 1
 
 if __name__ == '__main__':
 

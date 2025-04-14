@@ -1,6 +1,3 @@
-import sys
-sys.path.append('/Users/albert/Doc/_Python_/Calibration/src/')
-
 import astropy.io.fits as fits
 import numpy as np
 
