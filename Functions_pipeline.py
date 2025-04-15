@@ -99,9 +99,9 @@ def applyPrefilter(data, wvltsData, prefilter, prefScale, wvltsPref, direction):
 #direction = -1 -> subtract dark
 def applyDark(data, scalingdata, dark, scalingdark, direction):
     print("...Apply dark...")
-    if (dark.shape[0]<data.shape[0] or dark.shape[1]<data.shape[1]):
-        print("Size of dark is too small!")
-        return 0
+    if (dark.shape[0]<data.shape[2] or dark.shape[1]<data.shape[3]):
+        print("Size of dark is too small!", dark.shape[0], data.shape[0], dark.shape[1], data.shape[1])
+        raise ValueError("Size of dark is too small for the input data.")
 
     FOV_Start_x = int(dark.shape[1]/2 - data.shape[3]/2)
     FOV_End_x = int(dark.shape[1]/2 + data.shape[3]/2)
@@ -119,6 +119,7 @@ def applyDark(data, scalingdata, dark, scalingdark, direction):
                 data[i,j,:,:] = data[i,j,:,:] - dark
             else:
                 print("Invalid direction! Use 1 for +, -1 for -.")
+                raise ValueError("Invalid direction.")
     return data
 
 #Apply Flat field
@@ -130,29 +131,23 @@ def applyDark(data, scalingdata, dark, scalingdark, direction):
 #direction = -1 -> divide by flat
 def applyFlat(data, flat, noFlats, scalingflat, direction):
     print("...Apply flat...")
-    if (flat.shape[2]<data.shape[2] or flat.shape[1]<data.shape[1]):
+    if (flat.shape[0]<data.shape[0] or flat.shape[1]<data.shape[1] or flat.shape[2]<data.shape[2] or flat.shape[3]<data.shape[3]):
         print("Size of flat is too small!")
-        return 0
+        raise ValueError("Size of flat is too small for the input data.")
 
-    FOV_Start_x = int(flat.shape[2]/2 - data.shape[3]/2)
-    FOV_End_x = int(flat.shape[2]/2 + data.shape[3]/2)
-    FOV_Start_y = int(flat.shape[1]/2 - data.shape[2]/2)
-    FOV_End_y = int(flat.shape[1]/2 + data.shape[2]/2)
-
-    flat = flat[:,FOV_Start_y:FOV_End_y,FOV_Start_x:FOV_End_x] / 4
     if (noFlats == 24):
         if direction == 1:
             for i in range(0,6):
                 for j in range(0,4):
-                    data[i,j,:,:] = data[i,j,:,:] * flat[i,j,:,:]
+                    data[i,j,:,:] = data[i,j,:,:] * (flat[i,j,:,:]*scalingflat)
         elif direction == -1:
-            for i in range(0,6):
-                for j in range(0,4):
-                    data[i,j,:,:] = data[i,j,:,:] / flat[i,j,:,:]
+            data = data / flat
         else:
             print("Invalid direction! Use 1 for *, -1 for /.")
+            raise ValueError("Invalid direction.")
     else:
         print("Option not yet implemented!")
+        raise ValueError("Unavailable option.")
 
     print("Flat mean:", np.mean(flat))
     return data
@@ -165,7 +160,7 @@ def modulateImages(data, matrix, scalingmatrix):
     print("...Modulate...")
     if (matrix.shape[0]<data.shape[3] or matrix.shape[1]<data.shape[2]):
         print("Size of matrix is too small!")
-        return 0
+        raise ValueError("Size of demodulation matrix is too small for the input data.")
 
     reshapedMM = np.zeros((data.shape[2], data.shape[3], 4, 4))
 
@@ -210,7 +205,7 @@ def demodulateImages(data, matrix, scalingmatrix):
     print(data.shape)
     if (matrix.shape[3]<data.shape[3] or matrix.shape[2]<data.shape[2]):
         print("Size of matrix is too small!")
-        return 0
+        raise ValueError("Size of demodulation matrix is too small for the input data.")
 
     print(data.shape)
     reshapedMM = np.zeros((data.shape[2], data.shape[3], 4, 4))
@@ -265,6 +260,7 @@ def reorderImg2RTE(inp, wvl, pol):
         return array_reord
     else:
         print("Mode not yet implemented.")
+        raise ValueError("Option not implemented.")
 
 #Reorder images from RTE inversion in DPU to view them
 #inp -> what to apply it on, 24 images in it: [wvl,pol,x,y], should be Stokes
@@ -280,6 +276,7 @@ def reorderRTE2Img(inp, noIm):
         return outp
     else:
         print("Mode not yet implemented.")
+        raise ValueError("Option not implemented.")
 
 #Correct I->Q,
 #coeffQ, coeffU, coeffV -> cross-talk coefficients

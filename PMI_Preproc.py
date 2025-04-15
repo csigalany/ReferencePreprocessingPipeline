@@ -27,11 +27,11 @@ def makeDummyData(linkInput, nameInput, linkDark, nameDark, linkFlat, nameFlat, 
     #Note: result to the preprocessing should be all ones.
     print("I am making dummy data now.")
 
-    inputData = np.ones((6,4,2048,2048))*2
-    dark = np.ones((2048,2048))
-    flat = np.ones((6,4,2048,2048))
+    inputData = np.ones((6,4,2048,2))*2
+    dark = np.ones((2048,2))
+    flat = np.ones((6,4,2048,2))
     #make identity matrix
-    demod = np.zeros((4,4,2048,2048))
+    demod = np.zeros((4,4,2048,2))
     demod[0,0] = 1
     demod[1,1] = 1
     demod[2,2] = 1
@@ -78,10 +78,10 @@ if __name__ == '__main__':
     #################################################################
 
     #Convert binaries to FITS
-    Functions_DPU_related.bin2FITS_n_bigendian_float(linkInput, nameInput, ".bin", 6, 4, 2048, 2048)
-    Functions_DPU_related.bin2FITS_n_bigendian_float(linkDark, nameDark, ".bin", 1, 1, 2048, 2048)
-    Functions_DPU_related.bin2FITS_n_bigendian_float(linkFlat, nameFlat, ".bin", 6, 4, 2048, 2048)
-    Functions_DPU_related.bin2FITS_n_bigendian_float(linkDemod, nameDemod, ".bin", 4, 4, 2048, 2048)
+    Functions_DPU_related.bin2FITS_n_bigendian_float(linkInput, nameInput, ".bin", 6, 4, 2048, 2)
+    Functions_DPU_related.bin2FITS_n_bigendian_float(linkDark, nameDark, ".bin", 1, 1, 2048, 2)
+    Functions_DPU_related.bin2FITS_n_bigendian_float(linkFlat, nameFlat, ".bin", 6, 4, 2048, 2)
+    Functions_DPU_related.bin2FITS_n_bigendian_float(linkDemod, nameDemod, ".bin", 4, 4, 2048, 2)
 
 
     #################################################################
