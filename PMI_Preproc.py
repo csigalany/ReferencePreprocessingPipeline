@@ -58,16 +58,16 @@ linkDemod = linkInput
 nameDemod = "demod"
 linkOutput = linkInput
 nameOutput = "output"
-I2Q_offset = 0
-I2U_offset = 0
-I2V_offset = 0
-I2Q_scale = 0
-I2U_scale = 0
-I2V_scale = 0
-V2Q_offset = 0
-V2U_offset = 0
-V2Q_scale = 0
-V2U_scale = 0
+I2Q_offset = np.float32(0)
+I2U_offset = np.float32(0)
+I2V_offset = np.float32(0)
+I2Q_scale = np.float32(0)
+I2U_scale = np.float32(0)
+I2V_scale = np.float32(0)
+V2Q_offset = np.float32(0)
+V2U_offset = np.float32(0)
+V2Q_scale = np.float32(0)
+V2U_scale = np.float32(0)
 
 #If you need to create the dummy data, set this to 1. Needed only 1x.
 dummyData = 1

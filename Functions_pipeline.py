@@ -294,9 +294,9 @@ def reorderRTE2Img(inp, noIm):
 #coeffQ, coeffU, coeffV -> cross-talk coefficients
 #This function needs more work!!!!
 def correctI2QUV(inp, coeffQ, coeffU, coeffV, scaling):
-    print("Q:", coeffQ * scaling)
-    print("U:", coeffU * scaling)
-    print("V:", coeffV * scaling)
+    print("I2Q (a):", coeffQ * scaling)
+    print("I2U (b):", coeffU * scaling)
+    print("I2V (d):", coeffV * scaling)
 
     corrImQ = inp[:,0,:,:] * coeffQ * scaling
     corrImU = inp[:,0,:,:] * coeffU * scaling
@@ -311,8 +311,8 @@ def correctI2QUV(inp, coeffQ, coeffU, coeffV, scaling):
 #coeffQ, coeffU, coeffV -> cross-talk coefficients
 #This function needs more work!!!!
 def correctV2QU(inp, coeffQ, coeffU, scaling):
-    print("Q:", coeffQ * scaling)
-    print("U:", coeffU * scaling)
+    print("V2Q (c):", coeffQ * scaling)
+    print("V2U (e):", coeffU * scaling)
     
     corrImQ = inp[:,3,:,:] * coeffQ * scaling
     corrImU = inp[:,3,:,:] * coeffU * scaling
