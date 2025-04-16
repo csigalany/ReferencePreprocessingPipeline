@@ -28,7 +28,7 @@ def getData(link, name, ext):
     hdr = FITSHandle[0].header
     #Uncomment this if you are testing, and need file info.
     #print(repr(hdr))
-    data = FITSHandle[0].data.astype("float")
+    data = FITSHandle[0].data.astype("float32")
 
     return data
 
@@ -131,17 +131,29 @@ def applyDark(data, scalingdata, dark, scalingdark, direction):
 #direction = -1 -> divide by flat
 def applyFlat(data, flat, noFlats, scalingflat, direction):
     print("...Apply flat...")
-    if (flat.shape[0]<data.shape[0] or flat.shape[1]<data.shape[1] or flat.shape[2]<data.shape[2] or flat.shape[3]<data.shape[3]):
-        print("Size of flat is too small!")
-        raise ValueError("Size of flat is too small for the input data.")
 
     if (noFlats == 24):
+        if (flat.shape[0]<data.shape[0] or flat.shape[1]<data.shape[1] or flat.shape[2]<data.shape[2] or flat.shape[3]<data.shape[3]):
+            print("Size of flat is too small!")
+            raise ValueError("Size of flat is too small for the input data.")
         if direction == 1:
             for i in range(0,6):
-                for j in range(0,4):
                     data[i,j,:,:] = data[i,j,:,:] * (flat[i,j,:,:]*scalingflat)
         elif direction == -1:
             data = data / flat
+        else:
+            print("Invalid direction! Use 1 for *, -1 for /.")
+            raise ValueError("Invalid direction.")
+    elif (noFlats == 6):
+        if (flat.shape[0]<data.shape[0] or flat.shape[1]<data.shape[2] or flat.shape[2]<data.shape[3]):
+            print("Size of flat is too small!")
+            raise ValueError("Size of flat is too small for the input data.")
+        if direction == 1:
+            for i in range(0,6):
+                    data[i,:,:,:] = data[i,:,:,:] * (flat[i,:,:]*scalingflat)
+        elif direction == -1:
+            for i in range(0,6):
+                    data[i,:,:,:] = data[i,:,:,:] / (flat[i,:,:]*scalingflat)
         else:
             print("Invalid direction! Use 1 for *, -1 for /.")
             raise ValueError("Invalid direction.")
@@ -278,21 +290,36 @@ def reorderRTE2Img(inp, noIm):
         print("Mode not yet implemented.")
         raise ValueError("Option not implemented.")
 
-#Correct I->Q,
+#Correct I->Q,U,V
 #coeffQ, coeffU, coeffV -> cross-talk coefficients
 #This function needs more work!!!!
-def correctI2QUV(inp,coeffQ,coeffU,coeffV):
-    print("Q:", coeffQ / 2**23 / 256)
-    print("U:", coeffU / 2**23 / 256)
-    print("V:", coeffV / 2**23 / 256)
-    for i in range(0,6):
-        corrImQ = inp[i,0,:,:] * coeffQ / 2**23 / 256
-        corrImU = inp[i,0,:,:] * coeffU / 2**23 / 256
-        corrImV = inp[i,0,:,:] * coeffV / 2**23 / 256
+def correctI2QUV(inp, coeffQ, coeffU, coeffV, scaling):
+    print("Q:", coeffQ * scaling)
+    print("U:", coeffU * scaling)
+    print("V:", coeffV * scaling)
 
-        inp[i,1,:,:] = inp[i,1,:,:] - corrImQ
-        inp[i,2,:,:] = inp[i,2,:,:] - corrImU
-        inp[i,3,:,:] = inp[i,3,:,:] - corrImV
+    corrImQ = inp[:,0,:,:] * coeffQ * scaling
+    corrImU = inp[:,0,:,:] * coeffU * scaling
+    corrImV = inp[:,0,:,:] * coeffV * scaling
+
+    inp[:,1,:,:] = inp[:,1,:,:] - corrImQ
+    inp[:,2,:,:] = inp[:,2,:,:] - corrImU
+    inp[:,3,:,:] = inp[:,3,:,:] - corrImV
+    return inp
+
+#Correct V->Q,U
+#coeffQ, coeffU, coeffV -> cross-talk coefficients
+#This function needs more work!!!!
+def correctV2QU(inp, coeffQ, coeffU, scaling):
+    print("Q:", coeffQ * scaling)
+    print("U:", coeffU * scaling)
+    
+    corrImQ = inp[:,3,:,:] * coeffQ * scaling
+    corrImU = inp[:,3,:,:] * coeffU * scaling
+
+    inp[:,1,:,:] = inp[:,1,:,:] - corrImQ
+    inp[:,2,:,:] = inp[:,2,:,:] - corrImU
+    
     return inp
 
 '''

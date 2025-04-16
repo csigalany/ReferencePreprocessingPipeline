@@ -27,11 +27,11 @@ def makeDummyData(linkInput, nameInput, linkDark, nameDark, linkFlat, nameFlat, 
     #Note: result to the preprocessing should be all ones.
     print("I am making dummy data now.")
 
-    inputData = np.ones((6,4,2048,2))*2
-    dark = np.ones((2048,2))
-    flat = np.ones((6,4,2048,2))
+    inputData = np.ones((6,4,2048,2), dtype="float32")*2
+    dark = np.ones((2048,2), dtype="float32")
+    flat = np.ones((6,2048,2), dtype="float32")
     #make identity matrix
-    demod = np.zeros((4,4,2048,2))
+    demod = np.zeros((4,4,2048,2), dtype="float32")
     demod[0,0] = 1
     demod[1,1] = 1
     demod[2,2] = 1
@@ -64,6 +64,10 @@ I2V_offset = 0
 I2Q_scale = 0
 I2U_scale = 0
 I2V_scale = 0
+V2Q_offset = 0
+V2U_offset = 0
+V2Q_scale = 0
+V2U_scale = 0
 
 #If you need to create the dummy data, set this to 1. Needed only 1x.
 dummyData = 1
@@ -80,7 +84,7 @@ if __name__ == '__main__':
     #Convert binaries to FITS
     Functions_DPU_related.bin2FITS_n_bigendian_float(linkInput, nameInput, ".bin", 6, 4, 2048, 2)
     Functions_DPU_related.bin2FITS_n_bigendian_float(linkDark, nameDark, ".bin", 1, 1, 2048, 2)
-    Functions_DPU_related.bin2FITS_n_bigendian_float(linkFlat, nameFlat, ".bin", 6, 4, 2048, 2)
+    Functions_DPU_related.bin2FITS_n_bigendian_float(linkFlat, nameFlat, ".bin", 6, 1, 2048, 2)
     Functions_DPU_related.bin2FITS_n_bigendian_float(linkDemod, nameDemod, ".bin", 4, 4, 2048, 2)
 
 
@@ -93,14 +97,20 @@ if __name__ == '__main__':
     flatData = Functions_pipeline.getData(linkFlat, nameFlat, ".fits")    
     demodData = Functions_pipeline.getData(linkDemod, nameDemod, ".fits")
 
+    inputData = inputData.astype("float32")
+    darkData = darkData.astype("float32")
+    flatData = flatData.astype("float32")
+    demodData = demodData.astype("float32")
+
     #################################################################
     #     --------------------- Pipeline ---------------------      #
     #################################################################
 
     intermediateData = Functions_pipeline.applyDark(inputData, 1, darkData, 1, -1)
-    intermediateData = Functions_pipeline.applyFlat(intermediateData, flatData, 24, 1, -1)
+    intermediateData = Functions_pipeline.applyFlat(intermediateData, flatData, 6, 1, 1)
     intermediateData = Functions_pipeline.demodulateImages(intermediateData, demodData, 1)
-    intermediateData = Functions_pipeline.correctI2QUV(intermediateData, I2Q_scale, I2U_scale, I2V_scale)
+    intermediateData = Functions_pipeline.correctI2QUV(intermediateData, I2Q_scale, I2U_scale, I2V_scale, 1)
+    intermediateData = Functions_pipeline.correctV2QU(intermediateData, V2Q_scale, V2U_scale, 1)
 
     #################################################################
     #     --------------------- Put data ---------------------      #

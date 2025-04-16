@@ -27,7 +27,7 @@ def putData_to_bigendian_float(data, link, name_noext):
     fh.close()
 
     fh = open(link+name_noext+"_float_littleE.bin", "r")
-    data = np.fromfile(fh, dtype="int32")
+    data = np.fromfile(fh, dtype="float32")
     data.byteswap(inplace=True)
     fh.close()
     #I then delete this File
@@ -53,7 +53,7 @@ def FITS2bin_bigendian_float(link, name_noext):
     fh.close()
 
     fh = open(link+name_noext+"_float_littleE.bin", "r")
-    data = np.fromfile(fh, dtype="int32")
+    data = np.fromfile(fh, dtype="float32")
     data.byteswap(inplace=True)
     fh.close()
     #I then delete this File
@@ -69,7 +69,7 @@ def bin2FITS_n_bigendian_float(link, name_noext, ext, wvl, pol, x, y):
 
     data = np.fromfile(f,'>f4')
 
-    float_array = data.astype("double")
+    float_array = data.astype("float32")
     print("FLOATARRAY")
     #size = int(float_array.shape[0]/wvl/pol)
     #sizeNew = int(math.sqrt(size))
@@ -77,6 +77,8 @@ def bin2FITS_n_bigendian_float(link, name_noext, ext, wvl, pol, x, y):
 
     if(wvl == 1 and pol==1):
         float_array = float_array.reshape((x, y))
+    elif(pol==1):
+        float_array = float_array.reshape((wvl, x, y))
     else:
         float_array = float_array.reshape((wvl, pol, x, y))
 
