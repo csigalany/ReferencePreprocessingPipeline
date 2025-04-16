@@ -27,7 +27,7 @@ def makeDummyData(linkInput, nameInput, linkDark, nameDark, linkFlat, nameFlat, 
     #Note: result to the preprocessing should be all ones.
     print("I am making dummy data now.")
 
-    inputData = np.ones((6,4,2048,2), dtype="float32")*2
+    inputData = np.ones((6,4,2048,2), dtype="float32")
     dark = np.ones((2048,2), dtype="float32")
     flat = np.ones((6,2048,2), dtype="float32")
     #make identity matrix

@@ -82,8 +82,6 @@ def bin2FITS_n_bigendian_float(link, name_noext, ext, wvl, pol, x, y):
     else:
         float_array = float_array.reshape((wvl, pol, x, y))
 
-    #float_array = float_array.astype("double")
-
     intermImage = pf.PrimaryHDU(data = float_array)
     FITSImage = pf.HDUList([intermImage])
     FITSImage.writeto(link+name_noext+".fits",overwrite='true')

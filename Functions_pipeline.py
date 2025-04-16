@@ -110,7 +110,7 @@ def applyDark(data, scalingdata, dark, scalingdark, direction):
 
     #print("DetectorArea Dark:",FOV_Start_x, FOV_End_x)
 
-    dark = (dark[FOV_Start_y:FOV_End_y,FOV_Start_x:FOV_End_x].astype("float") / scalingdark) * scalingdata
+    dark = (dark[FOV_Start_y:FOV_End_y,FOV_Start_x:FOV_End_x].astype("float32") / scalingdark) * scalingdata
     for i in range(0,data.shape[0]):
         for j in range(0,data.shape[1]):
             if direction == 1:
