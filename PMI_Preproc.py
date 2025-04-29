@@ -111,6 +111,7 @@ if __name__ == '__main__':
     intermediateData = Functions_pipeline.demodulateImages(intermediateData, demodData, 1)
     intermediateData = Functions_pipeline.correctI2QUV(intermediateData, I2Q_scale, I2U_scale, I2V_scale, 1)
     intermediateData = Functions_pipeline.correctV2QU(intermediateData, V2Q_scale, V2U_scale, 1)
+    intermediateData = Functions_pipeline.reorderImg2RTE(intermediateData, 6, 4)
 
     #################################################################
     #     --------------------- Put data ---------------------      #
