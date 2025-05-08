@@ -66,7 +66,7 @@ Flat_demod[:,0,:,:] = Flat_upload[0:6,:,:]
 for i in range(0,6):
     Flat_demod[i,1:,:,:] = Flat_upload[6:,:,:]
 #Now modulate again
-Flat = Functions_pipeline.matrixMul1D(Flat_demod, Mod)
+Flat = Functions_pipeline.matrixMul4by4(Flat_demod, Mod)
 
 #------------------------------------------------------------------
 #------------------------------------------------------------------
