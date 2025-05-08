@@ -168,7 +168,7 @@ def applyFlat(data, flat, noFlats, scalingflat, direction):
 #data -> what to apply it on, 24 images in it: [wvl,pol,x,y]
 #matrix -> demodulation matrix[4,4]
 #scalingmatrix-> demodulation matrix will be divided by this scale factor
-def matrixMul1D(data, matrix, scalingmatrix):
+def matrixMul1D(data, matrix):
     print("...Demodulate...")
     print(matrix.shape)
     print(data.shape)
@@ -189,7 +189,7 @@ def matrixMul1D(data, matrix, scalingmatrix):
             # For each input modulation state (0..3)
             for j in range(4):
                 temp += matrix[i, j] * data[w, j, :, :]
-            OutpMod[w, i, :, :] = temp / scalingmatrix
+            OutpMod[w, i, :, :] = temp
 
     return OutpMod
 
