@@ -24,7 +24,7 @@ linkNameFlat = "Flat/0024150120_im"
 #------------------------------------------------------------------
 #4x4
 Mod = Functions_pipeline.getData(linkData, linkNameMod, ".fits")  
-#24x2048x2948
+#24x2048x2048
 Flat24 = Functions_pipeline.getData(linkData, linkNameFlat, ".fits")  
 # shape 24x2048x2048 into 6x4x2048x2048
 Flat = Flat24.reshape(6, 4, 2048, 2048)
