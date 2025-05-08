@@ -164,6 +164,35 @@ def applyFlat(data, flat, noFlats, scalingflat, direction):
     print("Flat mean:", np.mean(flat))
     return data
 
+#Matrix multiplication
+#data -> what to apply it on, 24 images in it: [wvl,pol,x,y]
+#matrix -> demodulation matrix[4,4]
+#scalingmatrix-> demodulation matrix will be divided by this scale factor
+def matrixMul1D(data, matrix, scalingmatrix):
+    print("...Demodulate...")
+    print(matrix.shape)
+    print(data.shape)
+    if (matrix.shape[0]!=4 or matrix.shape[1]!=4):
+        raise ValueError("Your demodulation matrix is of the wrong shape. :(")
+
+    # data: [6,4,x,y] (6 wavelengths, 4 pol states, x, y)
+    # matrix: [4,4] (demodulation matrix)
+    # scalingmatrix: scalar
+
+    OutpMod = np.zeros((6, 4, data.shape[2], data.shape[3]), dtype=data.dtype)
+
+    # For each wavelength (0..5)
+    for w in range(data.shape[0]):
+        # For each output Stokes parameter (0..3)
+        for i in range(4):
+            temp = np.zeros((data.shape[2], data.shape[3]), dtype=data.dtype)
+            # For each input modulation state (0..3)
+            for j in range(4):
+                temp += matrix[i, j] * data[w, j, :, :]
+            OutpMod[w, i, :, :] = temp / scalingmatrix
+
+    return OutpMod
+
 #Modulate data
 #data -> what to apply it on, 24 images in it: [wvl,pol,x,y]
 #matrix -> modulation matrix[4,4,x,y]
