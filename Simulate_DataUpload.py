@@ -41,7 +41,7 @@ Demod = np.linalg.inv(Mod)
 #------------------------------------------------------------------
 #Create uploaded flat
 #Demodulate the flat
-Flat_demod = Functions_pipeline.matrixMul1D(Flat, Demod, 1)
+Flat_demod = Functions_pipeline.matrixMul4by4(Flat, Demod, 1)
 #Pick out the continuum wavelengths, and the 4 polarisation states at continuum, 9 images total
 #Index of continuum wavelength
 ContIndex = 0
